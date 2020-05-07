@@ -61,7 +61,11 @@ export default {
 			this.changeData += 1;
 		}
 	},
-	onLoad() {}
+	onLoad() {
+		this.$get(342180, true).then(res => {
+			console.log(res)
+		});
+	}
 };
 </script>
 
