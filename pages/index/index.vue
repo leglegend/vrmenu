@@ -62,9 +62,9 @@ export default {
 		}
 	},
 	onLoad() {
-		this.$get(342180, true).then(res => {
-			console.log(res)
-		});
+		wx.setStorageSync('games',[
+			
+		])
 	}
 };
 </script>
