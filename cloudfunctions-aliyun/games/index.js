@@ -1,10 +1,42 @@
 'use strict';
 const db = uniCloud.database()
+let returnData = {
+	code: 200,
+	msg: "success"
+}
 exports.main = async (event, context) => {
-  //event为客户端上传的参数
-  console.log('event : ' + event)
+	console.log('event : ' + event)
 	const collection = db.collection('games')
+	if (event.body) {
+		let body = JSON.parse(event.body)
+		if (body.type == 'create') {
+			const res = await collection.add(body.data)
+			console.log(res)
+			returnData.data = {
+				id: body.id
+			}
+			return returnData
+		} else if (body.type == 'edit') {
+			let _id = body.data._id
+			delete body.data._id
+			const res = await collection.doc(_id).update(body.data)
+			console.log(res)
+			returnData.data = {
+				id: body.id
+			}
+			return returnData
+		} else if (body.type == 'delete') {
+			for (let id of body.data) {
+				await collection.doc(id).remove();
+			}
+			return returnData
+		}
+	}
 	const res = await collection.limit(100).get()
-  //返回数据给客户端
-  return res
+	return {
+		"code": 200,
+		"msg": "success",
+		"data": res.data,
+		"totalCount": res.data.length
+	}
 };

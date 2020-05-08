@@ -24,15 +24,14 @@
 </template>
 
 <script>
-import { games } from '@/utils/data.js';
-
 export default {
 	data() {
 		return {
 			types: ['新手推荐', '射击游戏', '动作游戏', '刺激游戏'],
 			currentType: '新手推荐',
 			changeData: 0,
-			items: []
+			items: [],
+			games: []
 		};
 	},
 	methods: {
@@ -44,7 +43,7 @@ export default {
 		chooseType(type) {
 			this.currentType = type;
 			let items = [];
-			for (let game of games) {
+			for (let game of this.games) {
 				if (game.type === type) {
 					items.push(game);
 				}
@@ -76,7 +75,8 @@ export default {
 	onShow() {
 		let wantIds = wx.getStorageSync('want') || [];
 		let haveIds = wx.getStorageSync('have') || [];
-		this.$cloud('games', {}, true).then(res => {
+		this.$cloud('games', { type: 'search' }, true).then(res => {
+			this.games = res
 			for (let game of res) {
 				if (wantIds.indexOf(game.id) >= 0) {
 					game.isWant = 1;

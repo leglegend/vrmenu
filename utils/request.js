@@ -8,12 +8,12 @@ export function get(appid, showLoading) {
 		})
 	}
 	return new Promise((resolve, reject) => {
-		let url = steamUrl.replace('gameid', appid)
+		// let url = steamUrl.replace('gameid', appid)
+		let url = 'https://f50cda04-8a49-4c85-85c5-5b7f9f8099bc.bspapp.com/http/games'
 		console.log(1)
 		wx.request({
 			url: url,
 			method: 'GET',
-			dataType: 'jsonp',
 			success: function(res) {
 				console.log(res)
 				if (showLoading) {
@@ -43,7 +43,7 @@ export function cloud(url, body, showLoading) {
 		uniCloud
 			.callFunction({
 				name: url,
-				dara: body
+				data: body
 			})
 			.then(res => {
 				console.log(res.result.data);
