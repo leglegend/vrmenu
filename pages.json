@@ -25,13 +25,13 @@
 	},
 	"tabBar": {
 		"backgroundColor":"#1b2128",
-		"selectedColor": "#ff6700",
-		"color": "#656565",
+		"selectedColor": "#ffffff",
+		"color": "#8a8a8a",
 		"list": [{
 				"pagePath": "pages/index/index",
 				"text": "推荐",
-				"iconPath": "/static/store.png",
-				"selectedIconPath": "/static/store-active.png"
+				"iconPath": "/static/game.png",
+				"selectedIconPath": "/static/game-active.png"
 			},
 			{
 				"pagePath": "pages/index/mine",

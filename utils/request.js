@@ -17,7 +17,7 @@ export function get(appid, showLoading) {
 				if (showLoading) {
 					wx.hideLoading()
 				}
-				resolve(res)
+				resolve(res.data)
 			},
 			fail: function(ret) {
 				console.log(ret)
