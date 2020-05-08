@@ -102,20 +102,27 @@ export default {
 			let haveIds = wx.getStorageSync('have') || [];
 			let wantGames = [];
 			let haveGames = [];
-			for (let game of games) {
-				if (wantIds.indexOf(game.id) >= 0) {
-					game.isWant = 1;
-					wantGames.push(game);
-				}
-				if (haveIds.indexOf(game.id) >= 0) {
-					game.isWant = 2;
-					haveGames.push(game);
-				}
-			}
-			this.wantGames = wantGames;
-			this.haveGames = haveGames;
-			this.wantCount = wantGames.length;
-			this.haveCount = haveGames.length;
+			uniCloud
+				.callFunction({
+					name: 'games'
+				})
+				.then(res => {
+					console.log(res.result.data);
+					for (let game of res.result.data) {
+						if (wantIds.indexOf(game.id) >= 0) {
+							game.isWant = 1;
+							wantGames.push(game);
+						}
+						if (haveIds.indexOf(game.id) >= 0) {
+							game.isWant = 2;
+							haveGames.push(game);
+						}
+					}
+					this.wantGames = wantGames;
+					this.haveGames = haveGames;
+					this.wantCount = wantGames.length;
+					this.haveCount = haveGames.length;
+				});
 		}
 	},
 	onShow() {

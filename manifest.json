@@ -75,5 +75,12 @@
     },
     "uniStatistics" : {
         "enable" : false
+    },
+    "h5" : {
+        "title" : "九月吧VR",
+        "router" : {
+            "base" : "/h5/"
+        },
+        "template" : "template.h5.html"
     }
 }

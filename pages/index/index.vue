@@ -25,7 +25,7 @@
 
 <script>
 import { games } from '@/utils/data.js';
- 
+
 export default {
 	data() {
 		return {
@@ -76,15 +76,17 @@ export default {
 	onShow() {
 		let wantIds = wx.getStorageSync('want') || [];
 		let haveIds = wx.getStorageSync('have') || [];
-		for (let game of games) {
-			if (wantIds.indexOf(game.id) >= 0) {
-				game.isWant = 1;
+		this.$cloud('games', {}, true).then(res => {
+			for (let game of res) {
+				if (wantIds.indexOf(game.id) >= 0) {
+					game.isWant = 1;
+				}
+				if (haveIds.indexOf(game.id) >= 0) {
+					game.isWant = 2;
+				}
 			}
-			if (haveIds.indexOf(game.id) >= 0) {
-				game.isWant = 2;
-			}
-		}
-		this.chooseType('新手推荐');
+			this.chooseType('新手推荐');
+		});
 	}
 };
 </script>
