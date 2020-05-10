@@ -2,10 +2,7 @@ let steamUrl =
 	'https://store.steampowered.com/broadcast/ajaxgetappinfoforcap?appid=gameid&feature=store-partner-events&cc=CN&l=schinese&origin=https:%2F%2Fstore.steampowered.com'
 export function get(appid, showLoading) {
 	if (showLoading) {
-		wx.showLoading({
-			title: '加载中',
-			mask: true
-		})
+		wx.showNavigationBarLoading()
 	}
 	return new Promise((resolve, reject) => {
 		// let url = steamUrl.replace('gameid', appid)
@@ -34,10 +31,7 @@ export function get(appid, showLoading) {
 
 export function cloud(url, body, showLoading) {
 	if (showLoading) {
-		wx.showLoading({
-			title: '加载中',
-			mask: true
-		})
+		wx.showNavigationBarLoading()
 	}
 	return new Promise((resolve, reject) => {
 		uniCloud
@@ -49,7 +43,7 @@ export function cloud(url, body, showLoading) {
 				console.log(res.result.data);
 				console.log(res)
 				if (showLoading) {
-					wx.hideLoading()
+					wx.hideNavigationBarLoading()
 				}
 				resolve(res.result.data)
 			});

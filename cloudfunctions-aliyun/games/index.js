@@ -32,6 +32,16 @@ exports.main = async (event, context) => {
 			return returnData
 		}
 	}
+	if (event.type == 'get') {
+		const res = await collection.where({
+			_id: event.id
+		}).get()
+		return {
+			"code": 200,
+			"msg": "success",
+			"data": res.data[0]
+		}
+	}
 	const res = await collection.limit(100).get()
 	return {
 		"code": 200,

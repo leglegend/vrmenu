@@ -1,17 +1,14 @@
 <template>
 	<view class="detail-page">
-		<swiper class="index-swiper" indicator-dots="true" autoplay="true" indicator-active-color="#ffffff">
-			<swiper-item class="swiper-item">
-				<video :src="gameInfo.microtrailer_mp4" :poster="gameInfo.main_capsule"/>
-				</swiper-item>
-			<swiper-item v-for="(item, index) in gameInfo.screenshot_list" :key="index" class="swiper-item"><image :src="item"></image></swiper-item>
+		<view class="page-bg"></view>
+		<swiper class="index-swiper" indicator-dots="true" :autoplay="autoPlay" indicator-active-color="#ffffff" @change="swiperChange">
+			<swiper-item class="swiper-item" v-for="(item, index) in gameInfo.videos" :key="index">
+				<video :id="'video' + index" @play="autoPlay = false" @pause="autoPlay = true" :src="item.url" :poster="item.poster" />
+			</swiper-item>
+			<swiper-item v-for="(item, index) in gameInfo.imgs" :key="index" class="swiper-item"><image :src="item"></image></swiper-item>
 		</swiper>
-		<view class="game-name">{{ title }}</view>
 		<view class="game-context">
-			<view class="context-line">游戏简介</view>
-			<view class="context-ctx">
-				<text>{{ gameInfo.short_desc }}</text>
-			</view>
+			<view class="context-ctx"><view v-html="gameInfo.html"></view></view>
 		</view>
 	</view>
 </template>
@@ -20,20 +17,59 @@
 export default {
 	data() {
 		return {
-			title: '',
-			video: '',
-			gameInfo: {}
+			autoPlay: true,
+			gameInfo: {},
+			videos: []
 		};
 	},
-	methods: {},
+	methods: {
+		swiperChange() {
+			for (let video of this.videos) {
+				video.pause();
+			}
+		},
+		createVideoContexts(videos) {
+			setTimeout(
+				function() {
+					let items = [];
+					for (let i = 0; i < videos.length; i++) {
+						items.push(wx.createVideoContext('video' + i, this));
+					}
+					this.videos = items;
+				}.bind(this),
+				500
+			);
+		}
+	},
 	onLoad(option) {
-		this.title = option.title;
-		uni.setNavigationBarTitle({
-			title: option.title
-		});
-		this.$get(option.id, true).then(res => {
+		this.id = option.id;
+		if (option.title) {
+			wx.setNavigationBarTitle({
+				title: option.title
+			});
+		}
+		this.autoPlay = true;
+		this.videos = [];
+		this.$cloud('games', { type: 'get', id: option.id }, true).then(res => {
 			this.gameInfo = res;
+			wx.setNavigationBarTitle({
+				title: res.title
+			});
+			if (res.videos && res.videos.length > 0) {
+				this.createVideoContexts(res.videos);
+			}
 		});
+	},
+	onShareAppMessage() {
+		let img = this.gameInfo.src;
+		if (this.gameInfo.imgs && this.gameInfo.imgs.length > 0) {
+			img = this.gameInfo.imgs[0];
+		}
+		return {
+			title: this.gameInfo.title,
+			path: '/pages/index/detail?title=' + this.gameInfo.title + '&id=' + this.id,
+			imageUrl: img
+		};
 	}
 };
 </script>
@@ -41,42 +77,45 @@ export default {
 <style lang="scss">
 .detail-page {
 	width: 100vw;
-	height: 100vh;
-	background-image: linear-gradient(#2a475e, #1d2b3c);
 	color: #ffffff;
+	.page-bg {
+		width: 100vw;
+		height: 100vh;
+		position: fixed;
+		left: 0;
+		top: 0;
+		z-index: 0;
+		background-image: linear-gradient(#2a475e, #1d2b3c);
+	}
 	.index-swiper {
 		width: 100vw;
-		height: 50vw;
+		height: 63vw;
+		position: relative;
+		z-index: 1;
 		.swiper-item {
 			width: 100vw;
-			height: 50vw;
+			height: 56.1vw;
 			image {
 				width: 100vw;
-				height: 50vw;
+				height: 56.1vw;
 			}
 			video {
 				width: 100vw;
-				height: 50vw;
+				height: 56.1vw;
 			}
 		}
 	}
-	.game-name {
-		padding-left: 4vw;
-		font-size: 5vw;
-		line-height: 11vw;
-		font-weight: 600;
-	}
 	.game-context {
-		padding: 0 4vw;
-		.context-line {
-			border-top: 0.1vw solid #f0f0f0;
-			line-height: 10vw;
-			font-size: 5vw;
-		}
+		padding: 2vw 3vw 2vw 3vw;
+		position: relative;
+		z-index: 1;
 		.context-ctx {
-			font-size: 3.5vw;
-			line-height: 5vw;
+			width: 94vw;
+			overflow: hidden;
 			padding-bottom: 10vw;
+			img {
+				width: 80vw;
+			}
 		}
 	}
 }
